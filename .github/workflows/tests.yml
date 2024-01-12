@@ -1,0 +1,16 @@
+name: Run tests
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: Linter / Formatter
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+    - name: Install ruff
+      run: pip install ruff
+    - name: Run linter
+      run: ruff check --no-fix --output-format github .
+    - name: Run formatter
+      run: ruff format --check .

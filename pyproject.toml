@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=51"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yt-dont-lock-p"
+description = "Plugin to apply a wake lock during yt-dlp execution"
+authors = [{name = "Simon Sawicki", email = "contact@grub4k.xyz"}]
+version = "0.1.0"
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+dependencies = ["wakepy>=0.7.2,<0.8"]
+
+[tool.distutils.bdist_wheel]
+universal = true
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+select = [
+	"A",
+	"C4",
+	"E",
+	"F",
+	"I",
+	"PIE",
+	"PTH",
+	"RET",
+	"RSE",
+	"RUF",
+	"TCH",
+	"TD003",
+	"TID",
+	"W",
+]
+ignore = ["E111", "E114", "E117", "E501", "W191"]
+task-tags = ["TODO", "FIXME", "XXX", "HACK"]
+fix = true
+
+[tool.ruff.isort]
+required-imports = ["from __future__ import annotations"]
+force-single-line = true
