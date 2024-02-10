@@ -1,26 +1,47 @@
 [build-system]
-requires = ["setuptools>=51"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling >=1.9.0, <2"]
+build-backend = "hatchling.build"
 
 [project]
 name = "yt-dont-lock-p"
 description = "Plugin to apply a wake lock during yt-dlp execution"
 authors = [{name = "Simon Sawicki", email = "contact@grub4k.xyz"}]
 version = "0.1.0"
-readme = "README.rst"
+readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
-dependencies = ["wakepy>=0.7.2,<0.8"]
+dependencies = [
+	"wakepy >=0.7.2, <0.8",
+]
 
-[tool.distutils.bdist_wheel]
-universal = true
+[tool.hatch.build.targets.wheel]
+packages = ["yt_dlp_plugins"]
+
+[tool.hatch.envs.default]
+dependencies = [
+	"ruff ==0.2.1",
+]
+
+[tool.hatch.envs.default.scripts]
+lint = "ruff check {args:--fix .}"
+format = "ruff format {args:.}"
+
+[tool.hatch.envs.ci]
+template = "default"
+skip-install = true
+
+[tool.hatch.envs.ci.scripts]
+lint = "ruff check {args:--no-fix --output-format github .}"
+format = "ruff format {args:--check .}"
 
 [tool.ruff]
 line-length = 88
 target-version = "py38"
+
+[tool.ruff.lint]
 select = [
 	"A",
-	"C4",
+	"C",
 	"E",
 	"F",
 	"I",
@@ -30,14 +51,10 @@ select = [
 	"RSE",
 	"RUF",
 	"TCH",
-	"TD003",
 	"TID",
 	"W",
 ]
-ignore = ["E111", "E114", "E117", "E501", "W191"]
-task-tags = ["TODO", "FIXME", "XXX", "HACK"]
-fix = true
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
 force-single-line = true

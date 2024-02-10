@@ -3,14 +3,14 @@ on: [push, pull_request]
 
 jobs:
   tests:
-    name: Linter / Formatter
+    name: Lint / Format
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
-    - name: Install ruff
-      run: pip install ruff
-    - name: Run linter
-      run: ruff check --no-fix --output-format github .
-    - name: Run formatter
-      run: ruff format --check .
+    - name: Install hatch
+      run: pip install hatch
+    - name: Run lint
+      run: hatch run ci:lint
+    - name: Run format
+      run: hatch run ci:format

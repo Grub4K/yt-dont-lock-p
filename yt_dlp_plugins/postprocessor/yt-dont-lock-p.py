@@ -18,8 +18,8 @@ except ImportError:
         print("[yt-dont-lock-p] Could not find wakepy", file=sys.stderr)
         keep = None
 
-    except Exception as error:
-        raise error from None
+    except Exception:
+        raise
 
     finally:
         sys.path.remove(search_path)
