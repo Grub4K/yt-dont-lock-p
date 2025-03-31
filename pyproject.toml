@@ -1,42 +1,32 @@
 [build-system]
-requires = ["hatchling >=1.9.0, <2"]
+requires = ["hatchling >=1.9.0, <2", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "yt-dont-lock-p"
 description = "Plugin to apply a wake lock during yt-dlp execution"
-authors = [{name = "Simon Sawicki", email = "contact@grub4k.xyz"}]
-version = "0.1.0"
+authors = [{name = "Simon Sawicki", email = "contact@grub4k.dev"}]
 readme = "README.md"
-requires-python = ">=3.8"
-license = {text = "MIT"}
+requires-python = ">=3.9"
+dynamic = ["version"]
+license = {file = "LICENSE"}
 dependencies = [
-	"wakepy >=0.7.2, <0.8",
+	"wakepy==0.10.*",
 ]
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["yt_dlp_plugins"]
 
 [tool.hatch.envs.default]
-dependencies = [
-	"ruff ==0.2.1",
-]
+installer = "uv"
 
-[tool.hatch.envs.default.scripts]
-lint = "ruff check {args:--fix .}"
-format = "ruff format {args:.}"
-
-[tool.hatch.envs.ci]
-template = "default"
-skip-install = true
-
-[tool.hatch.envs.ci.scripts]
-lint = "ruff check {args:--no-fix --output-format github .}"
-format = "ruff format {args:--check .}"
-
-[tool.ruff]
-line-length = 88
-target-version = "py38"
+[tool.hatch.envs.hatch-static-analysis]
+installer = "uv"
+dependencies = ["ruff==0.11.*"]
+config-path = "pyproject.toml"
 
 [tool.ruff.lint]
 select = [
@@ -46,15 +36,30 @@ select = [
 	"F",
 	"I",
 	"PIE",
+	"PLC",
+	"PLE",
+	"PLW",
 	"PTH",
+	"PYI",
 	"RET",
 	"RSE",
 	"RUF",
-	"TCH",
+	"SIM",
+	"TC",
+	"TD",
 	"TID",
 	"W",
+]
+ignore = [
+	"TD003",
+	"E402",
+	"E501",
+	"PLR09",
 ]
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
 force-single-line = true
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"

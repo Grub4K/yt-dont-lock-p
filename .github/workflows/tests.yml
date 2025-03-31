@@ -7,10 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
-    - name: Install hatch
-      run: pip install hatch
-    - name: Run lint
-      run: hatch run ci:lint
-    - name: Run format
-      run: hatch run ci:format
+    - uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.6.x"
+    - name: Run static analysis
+      run: uv tool run hatch fmt --check
