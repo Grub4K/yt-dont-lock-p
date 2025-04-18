@@ -23,7 +23,7 @@ jobs:
         mkdir bundle/
         uv pip install --python-version 3.9 --python-platform linux --requirements pyproject.toml --target bundle/yt_dlp_plugins/
         rm -rf bundle/yt_dlp_plugins/*.dist-info bundle/yt_dlp_plugins/bin
-        cp -ra yt_dlp_plugins bundle/
+        uv pip install --python-version 3.9 --python-platform linux --no-deps --target bundle/ .
         (cd bundle/ && zip -9 --recurse-paths yt-dont-lock-p yt_dlp_plugins)
 
         version="$(uv tool run hatch version)"

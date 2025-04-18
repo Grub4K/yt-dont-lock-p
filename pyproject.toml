@@ -17,6 +17,9 @@ dependencies = [
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.build.hooks.vcs]
+version-file = "yt_dlp_plugins/postprocessor/yt_dont_lock_p/_version.py"
+
 [tool.hatch.build.targets.wheel]
 packages = ["yt_dlp_plugins"]
 
