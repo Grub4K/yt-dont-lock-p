@@ -32,6 +32,7 @@ def lock_enter(self: yt_dlp.YoutubeDL, /):
         sys.path.append(search_path)
 
         try:
+            import jeepney  # noqa: F401 Import to add to sys.modules with modified sys.path
             from wakepy import keep
 
         except ImportError:
@@ -45,18 +46,17 @@ def lock_enter(self: yt_dlp.YoutubeDL, /):
         finally:
             sys.path.remove(search_path)
 
-    mode = keep.running(on_fail="pass")
-    lock = mode.__enter__()
-    if lock.active:
+    try:
+        lock = keep.running(on_fail="error").__enter__()
+    except Exception as error:
+        self.report_warning(f"{NAME}: Could not acquire wakelock: {error}")
+    else:
         self.write_debug(f"{NAME}: Acquired wakelock")
         setattr(self, LOCK_ATTR_NAME, lock)
-    else:
-        self.report_warning(f"{NAME}: Could not acquire wakelock")
 
 
 def lock_exit(self: yt_dlp.YoutubeDL, /, *args):
-    lock = getattr(self, LOCK_ATTR_NAME, None)
-    if lock:
+    if lock := getattr(self, LOCK_ATTR_NAME, None):
         self.write_debug(f"{NAME}: Released wakelock")
         lock.__exit__(*args)
 

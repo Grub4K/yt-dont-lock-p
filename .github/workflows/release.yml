@@ -10,23 +10,26 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
       with:
         fetch-depth: 0
-    - uses: astral-sh/setup-uv@v5
+    - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       with:
-        version: "0.6.x"
+        version: "0.11.x"
     - name: Bundle and create release
       env:
+        PYTHON_VERSION: "3.10"
         GH_TOKEN: ${{ github.token }}
       run: |
         mkdir bundle/
-        uv pip install --python-version 3.9 --python-platform linux --requirements pyproject.toml --target bundle/yt_dlp_plugins/
-        rm -rf bundle/yt_dlp_plugins/*.dist-info bundle/yt_dlp_plugins/bin
-        uv pip install --python-version 3.9 --python-platform linux --no-deps --target bundle/ .
+        uv export --locked --no-dev --format pylock.toml --output-file pylock.toml
+        uv pip sync --python-version "$PYTHON_VERSION" --python-platform linux --target bundle/yt_dlp_plugins/ pylock.toml
+        rm -rf bundle/yt_dlp_plugins/*.dist-info bundle/yt_dlp_plugins/bin bundle/yt_dlp_plugins/.lock bundle/yt_dlp_plugins/*.pth
+        uv pip install --no-deps --target bundle/ .
         (cd bundle/ && zip -9 --recurse-paths yt-dont-lock-p yt_dlp_plugins)
 
-        version="$(uv tool run hatch version)"
+        version="$(sed -En "s/__version__ = version = ['""](.*)['""]/\1/p" bundle/yt_dlp_plugins/postprocessor/yt_dont_lock_p/_version.py)"
+        mv bundle/yt-dont-lock-p.zip "bundle/yt-dont-lock-p_${version}.zip"
         gh release create "${version}" --latest \
             --title "yt-dont-lock-p ${version}" \
-            'bundle/yt-dont-lock-p.zip'
+            "bundle/yt-dont-lock-p_${version}.zip"

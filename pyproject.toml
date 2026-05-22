@@ -7,11 +7,16 @@ name = "yt-dont-lock-p"
 description = "Plugin to apply a wake lock during yt-dlp execution"
 authors = [{name = "Simon Sawicki", email = "contact@grub4k.dev"}]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["version"]
 license = {file = "LICENSE"}
 dependencies = [
-	"wakepy==0.10.*",
+	"wakepy>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff==0.15.*"
 ]
 
 [tool.hatch.version]
@@ -22,14 +27,6 @@ version-file = "yt_dlp_plugins/postprocessor/yt_dont_lock_p/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["yt_dlp_plugins"]
-
-[tool.hatch.envs.default]
-installer = "uv"
-
-[tool.hatch.envs.hatch-static-analysis]
-installer = "uv"
-dependencies = ["ruff==0.11.*"]
-config-path = "pyproject.toml"
 
 [tool.ruff.lint]
 select = [
@@ -58,6 +55,7 @@ ignore = [
 	"E402",
 	"E501",
 	"PLR09",
+	"PLC0415",
 ]
 
 [tool.ruff.lint.isort]
